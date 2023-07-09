@@ -2,7 +2,7 @@ import pygame
 import random
 
 pygame.init()
-font = pygame.font.SysFont('arial', 50)
+font = pygame.font.SysFont('Helvetica', 60)
 screen = pygame.display.set_mode((1800,980))
 clock = pygame.time.Clock()
 running = True
@@ -28,18 +28,30 @@ tiles = {
 
 
 class tile():
-
-    def __init__(self, coords, tiles, size):
-        self.value = random.choices([2,4], 1, [5,1])
-        self.num = random.choices(list(tiles.keys()), 1)
+    def __init__(self, coords, tiles, size, value):
+        self.value = value
+        self.num = random.choice(list(tiles.keys()))
         self.top = coords[self.num][0]
         self.left = coords[self.num][1]
         self.size = size
-        del tiles[self.num]
-        
+         
         rect1 = pygame.Rect(self.top, self.left, size, size)
         pygame.draw.rect(screen, ( 238, 228, 218 ), rect1)
-        screen.blit(font.render(str(self.value), True, (255,0,0)), (self.top + size/3 , self.left + size/3))
+        screen.blit(font.render(str(self.value), True, (50,50,50)), (self.top + size/3 + 10, self.left + size/3 - 5 ))
+    
+    def delete(self, tiles):
+        rect1 = pygame.Rect(self.top, self.left, self.size, self.size)
+        pygame.draw.rect(screen, "gray", rect1)
+        tiles[self.num] = 0
+
+    
+    def combine(t1, t2, tiles):
+        t2.value *= 2
+        t1.delete()
+        del t1
+    
+
+
 
 def setup():
     screen.fill("black")
@@ -79,12 +91,19 @@ def setup():
                              (start_L + i * diff + diff + i * 10 + 4, start_T + height),
                              width = 10)
         
-    tile(coords, tiles, diff)
+    a = tile(coords, tiles, diff, 2)
+    print(a.num)
+    del tiles[a.num]
+    print(tile(coords, tiles, diff, random.choice([2,2,2,2,2,4])).num)
+
+
+
+
     
     
 
 setup()
-print(coords)
+
 
 
 while running:
