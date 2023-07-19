@@ -1,4 +1,4 @@
-import pygame 
+import pygame
 import random
 
 pygame.init()
@@ -6,103 +6,78 @@ font = pygame.font.SysFont('Helvetica', 60)
 screen = pygame.display.set_mode((1800,980))
 clock = pygame.time.Clock()
 running = True
-coords = {}
-tiles = {
-    0: 0, 
-    1: 0, 
-    2: 0, 
-    3: 0,
-    4: 0, 
-    5: 0, 
-    6: 0, 
-    7: 0, 
-    8: 0, 
-    9: 0, 
-    10: 0, 
-    11: 0, 
-    12: 0, 
-    13: 0, 
-    14: 0, 
-    15: 0
-}
+tiles = {}
+start_L = 650
+start_T = 200
+size_square = 140
+size_line = 10
+
 
 
 class tile():
-    def __init__(self, coords, tiles, size, value):
+    def __init__(self, num, size, value, top, left):
         self.value = value
-        self.num = random.choice(list(tiles.keys()))
-        self.top = coords[self.num][0]
-        self.left = coords[self.num][1]
+        self.num = num
+        self.top = top
+        self.left = left
         self.size = size
-         
-        rect1 = pygame.Rect(self.top, self.left, size, size)
-        pygame.draw.rect(screen, ( 238, 228, 218 ), rect1)
-        screen.blit(font.render(str(self.value), True, (50,50,50)), (self.top + size/3 + 10, self.left + size/3 - 5 ))
+        tiles[num] = self
     
-    def delete(self, tiles):
-        rect1 = pygame.Rect(self.top, self.left, self.size, self.size)
-        pygame.draw.rect(screen, "gray", rect1)
-        tiles[self.num] = 0
-
+   
     
-    def combine(t1, t2, tiles):
+    def combine(self, t2):
         t2.value *= 2
-        t1.delete()
-        del t1
+        del tiles[self.num]
     
+
 
 
 
 def setup():
     screen.fill("black")
 
-    start_L = 650
-    start_T = 200
-    width = 600
-    height = 600
-    diff = (width - 40)/4
+    
     
 
     
-    rect1 = pygame.Rect(start_L, start_T, width, height)
-    pygame.draw.rect(screen, "white", rect1)
-    count = 0
+    rect1 = pygame.Rect(start_L - 25, start_T - 25, size_square * 4 + size_line * 3 + 50, size_square * 4 + size_line * 3 + 50)
+    pygame.draw.rect(screen, (90, 90, 90), rect1)
+    
 
-    for i in range(4):
-        for j in range(4):
+    board = [0] * 16
+    for i in range(16):
+        row = i // 4
+        col = i % 4
+        rect1 = pygame.Rect(start_L + (size_square + size_line) * col, start_T + (size_square + size_line) * row, size_square, size_square)
+        pygame.draw.rect(screen, (211, 211, 211) , rect1)
+    
+    
+    
+    for i in tiles:
+        rect1 = pygame.Rect(tiles[i].top, tiles[i].left, tiles[i].size, tiles[i].size)
+        pygame.draw.rect(screen, ( 238, 228, 218 ), rect1)
+        screen.blit(font.render(str(tiles[i].value), True, (50,50,50)), (tiles[i].top + size_square/3 + 10, tiles[i].left + size_square/3 - 5 ))
             
-            rect2 = pygame.Rect(start_L + i * diff + 10 * i, 
-                                start_T + j * diff + 10 * j, 
-                                diff, 
-                                diff)
-            
-            coords[count] = ((start_L + i * diff + 10 * i,start_T + j * diff + 10 * j))
-            count += 1
-            
-            pygame.draw.rect(screen, "gray", rect2) 
-            pygame.draw.line(screen, "black", 
-                             (start_L, start_T + (j + 1) * diff + 10 * j + 4), 
-                             (start_L + width, start_T + (j + 1) * diff + 10 *  j + 4),
-                             width = 10)
+    
+
+
+def moveup():
+    for i in range(15, 4, -1):
+        if i in tiles:
+            if tiles[i].value == tiles[i-4].value:
+                tiles[i].combine(tiles[i - 4])
+       
+
         
-            
-        pygame.draw.line(screen, "black", 
-                             (start_L + i * diff + diff + i * 10 + 4, start_T), 
-                             (start_L + i * diff + diff + i * 10 + 4, start_T + height),
-                             width = 10)
-        
-    a = tile(coords, tiles, diff, 2)
-    print(a.num)
-    del tiles[a.num]
-    print(tile(coords, tiles, diff, random.choice([2,2,2,2,2,4])).num)
-
-
-
 
     
-    
-
+tile(5, size_square, 2, start_L + (size_square + size_line) * (5 % 4), start_T + (size_square + size_line) * (5 // 4))
+tile(1, size_square, 2, start_L + (size_square + size_line) * (1 % 4), start_T + (size_square + size_line) * (1 // 4))
 setup()
+
+moveup()
+setup()
+
 
 
 
@@ -119,4 +94,9 @@ while running:
 
 pygame.quit()
 
+ 
 
+
+
+
+  
