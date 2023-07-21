@@ -14,6 +14,7 @@ size_line = 10
 
 
 
+
 class tile():
     def __init__(self, num, size, value, top, left):
         self.value = value
@@ -33,11 +34,9 @@ class tile():
 
 
 
-def setup():
+def draw():
     screen.fill("black")
 
-    
-    
 
     
     rect1 = pygame.Rect(start_L - 25, start_T - 25, size_square * 4 + size_line * 3 + 50, size_square * 4 + size_line * 3 + 50)
@@ -64,8 +63,21 @@ def setup():
 def moveup():
     for i in range(15, 4, -1):
         if i in tiles:
-            if tiles[i].value == tiles[i-4].value:
-                tiles[i].combine(tiles[i - 4])
+            if (i - 4) in tiles:
+                if tiles[i].value == tiles[i-4].value:
+                    tiles[i].combine(tiles[i - 4])
+            else:
+                tiles[i - 4] = tiles[i]
+                del tiles[i]
+
+def moveright():
+    for i in range(16):
+        if (i + 1) % 4 == 0 or i not in tiles:
+            continue
+        
+       # if tiles[i + 1]
+        
+
        
 
         
@@ -73,23 +85,35 @@ def moveup():
     
 tile(5, size_square, 2, start_L + (size_square + size_line) * (5 % 4), start_T + (size_square + size_line) * (5 // 4))
 tile(1, size_square, 2, start_L + (size_square + size_line) * (1 % 4), start_T + (size_square + size_line) * (1 // 4))
-setup()
+tile(8, size_square, 2, start_L + (size_square + size_line) * (8 % 4), start_T + (size_square + size_line) * (8 // 4))
 
-moveup()
-setup()
+
+
+
+
+
+
 
 
 
 
 while running:
+    draw()
+    pygame.display.flip()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+          
+            moveup()
+            draw()
+            pygame.display.flip()
 
     
         
                   
-    pygame.display.flip()
+   
     clock.tick(60)
 
 pygame.quit()
