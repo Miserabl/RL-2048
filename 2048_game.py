@@ -61,31 +61,64 @@ def draw():
 
 
 def moveup():
-    for i in range(15, 4, -1):
+    for i in range(16, 4, -1):
         if i in tiles:
             if (i - 4) in tiles:
                 if tiles[i].value == tiles[i-4].value:
                     tiles[i].combine(tiles[i - 4])
             else:
-                tiles[i - 4] = tiles[i]
+                tiles[i - 4] = tile(i - 4, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i-4) % 4), start_T + (size_square + size_line) * ((i-4) // 4))
                 del tiles[i]
+                
+                
 
 def moveright():
     for i in range(16):
         if (i + 1) % 4 == 0 or i not in tiles:
             continue
         
-       # if tiles[i + 1]
+        if i + 1 in tiles:
+            if tiles[i].value == tiles[i + 1].value:
+                    tiles[i].combine(tiles[i + 1])
+        else:
+            tiles[i + 1] = tile(i + 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i + 1) % 4), start_T + (size_square + size_line) * ((i + 1) // 4))
+            del tiles[i]
+
+def moveleft():
+    for i in range(16):
+        if i % 4 == 0 or i not in tiles:
+            continue
+        
+        if tiles[i - 1] in tiles:
+            if tiles[i].value == tiles[i - 1].value:
+                    tiles[i].combine(tiles[i - 1])
+        else:
+            tiles[i - 1] = tile(i - 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i - 1) % 4), start_T + (size_square + size_line) * ((i - 1) // 4))
+            del tiles[i]
+
+def movedown():
+    for i in range(12):
+        if i in tiles:
+            if (i + 4) in tiles:
+                if tiles[i].value == tiles[i + 4].value:
+                    tiles[i].combine(tiles[i + 4])
+            else:
+                tiles[i + 4] = tile(i + 4, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i+4) % 4), start_T + (size_square + size_line) * ((i +4) // 4))
+                del tiles[i]
+
         
 
        
 
         
-
+avail = [i for i in range(16) if i not in tiles]
+num1 = random.choice(avail)
+avail.append(num1)
+num2 = random.choice(avail)
+val2 = random.choices((2,4),[5,1])[0]
     
-tile(5, size_square, 2, start_L + (size_square + size_line) * (5 % 4), start_T + (size_square + size_line) * (5 // 4))
-tile(1, size_square, 2, start_L + (size_square + size_line) * (1 % 4), start_T + (size_square + size_line) * (1 // 4))
-tile(8, size_square, 2, start_L + (size_square + size_line) * (8 % 4), start_T + (size_square + size_line) * (8 // 4))
+tile(num1, size_square, 2, start_L + (size_square + size_line) * (num1 % 4), start_T + (size_square + size_line) * (num1 // 4))
+tile(num2, size_square, val2, start_L + (size_square + size_line) * (num2 % 4), start_T + (size_square + size_line) * (num2 // 4))
 
 
 
@@ -105,8 +138,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-          
-            moveup()
+            moveleft()
             draw()
             pygame.display.flip()
 
