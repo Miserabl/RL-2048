@@ -67,48 +67,51 @@ def combine(t1, t2):
     score += t2.value
 
 def moveup():
-    for i in range(15, 3, -1):
+    for i in range(16):
         if i in tiles:
-            if (i - 4) in tiles:
-                if tiles[i].value == tiles[i-4].value:
-                    combine(tiles[i], tiles[i - 4])
-            else:
+
+            if (i + 4) in tiles:
+                if tiles[i].value == tiles[i + 4].value:
+                    combine(tiles[i + 4], tiles[i])
+            if i - 4 not in tiles and i > 3:
                 tiles[i - 4] = tile(i - 4, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i-4) % 4), start_T + (size_square + size_line) * ((i-4) // 4))
                 del tiles[i]
                 
                 
 
 def moveright():
-    for i in range(16):
-        if (i + 1) % 4 == 0 or i not in tiles:
-            continue
-        
-        if i + 1 in tiles:
-            if tiles[i].value == tiles[i + 1].value:
-                    combine(tiles[i], tiles[i + 1])
-        else:
-            tiles[i + 1] = tile(i + 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i + 1) % 4), start_T + (size_square + size_line) * ((i + 1) // 4))
-            del tiles[i]
+    for i in range(4):
+        for j in range(3, 0, -1):
+            num = 4 * i + j
+            if  num not in tiles:
+                continue
+            
+            if num - 1  in tiles:
+                if tiles[num].value == tiles[num - 1].value:
+                        combine(tiles[num - 1], tiles[num])
+            if i + 1 not in tiles and ( i + 1) % 4 != 0:
+                tiles[i + 1] = tile(i + 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i + 1) % 4), start_T + (size_square + size_line) * ((i + 1) // 4))
+                del tiles[i]
 
 def moveleft():
-    for i in range(15, -1 , -1):
-        if i % 4 == 0 or i not in tiles:
+    for i in range(16):
+        if i not in tiles or ( i + 1) % 4 == 0:
             continue
         
-        if (i - 1) in tiles:
-            if tiles[i].value == tiles[i - 1].value:
-                    combine(tiles[i], tiles[i - 1])
-        else:
+        if (i + 1) in tiles:
+            if tiles[i].value == tiles[i + 1].value:
+                    combine(tiles[i - 1], tiles[i])
+        if i - 1 not in tiles and  i % 4 != 0:
             tiles[i - 1] = tile(i - 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i - 1) % 4), start_T + (size_square + size_line) * ((i - 1) // 4))
             del tiles[i]
 
 def movedown():
-    for i in range(12):
+    for i in range(15, 3, -1):
         if i in tiles:
-            if (i + 4) in tiles:
-                if tiles[i].value == tiles[i + 4].value:
-                    combine(tiles[i], tiles[i + 4])
-            else:
+            if (i - 4) in tiles:
+                if tiles[i].value == tiles[i - 4].value:
+                    combine(tiles[i- 4], tiles[i])
+            if i + 4 not in tiles and i < 1:
                 tiles[i + 4] = tile(i + 4, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i+4) % 4), start_T + (size_square + size_line) * ((i +4) // 4))
                 del tiles[i]
 
