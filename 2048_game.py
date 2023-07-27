@@ -4,6 +4,7 @@ import random
 pygame.init()
 font = pygame.font.SysFont('Helvetica', 60)
 font2 = pygame.font.SysFont('Helvetica', 30)
+font3 = pygame.font.SysFont('Helvetica', 45)
 screen = pygame.display.set_mode((1800,980))
 clock = pygame.time.Clock()
 running = True
@@ -14,7 +15,7 @@ size_square = 140
 size_line = 10
 score = 0 
 
-
+colors = {2:( 238, 228, 218 ), 4: (237, 224, 200), 8: (242, 177, 121), 16: (242, 177, 121), 32 : (246, 124, 95),  64:(246, 94, 59), 128: (237, 207, 114), 256: (237, 204, 97), }
 
 class tile():
     def __init__(self, num, size, value, top, left):
@@ -55,8 +56,8 @@ def draw():
     
     for i in tiles:
         rect1 = pygame.Rect(tiles[i].top, tiles[i].left, tiles[i].size, tiles[i].size)
-        pygame.draw.rect(screen, ( 238, 228, 218 ), rect1)
-        screen.blit(font.render(str(tiles[i].value), True, (50,50,50)), (tiles[i].top + size_square/3 + 10, tiles[i].left + size_square/3 - 5 ))
+        pygame.draw.rect(screen, colors[tiles[i].value], rect1)
+        screen.blit(font3.render(str(tiles[i].value), True, (50,50,50)), (tiles[i].top + size_square/3 - 15, tiles[i].left + size_square/3 - 10 ))
             
     
 
@@ -67,50 +68,152 @@ def combine(t1, t2):
     score += t2.value
 
 def moveup():
-    for i in range(15, 3, -1):
-        if i in tiles:
-            if (i - 4) in tiles:
-                if tiles[i].value == tiles[i-4].value:
-                    combine(tiles[i], tiles[i - 4])
-            else:
-                tiles[i - 4] = tile(i - 4, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i-4) % 4), start_T + (size_square + size_line) * ((i-4) // 4))
-                del tiles[i]
-                
-                
-
-def moveright():
-    for i in range(16):
-        if (i + 1) % 4 == 0 or i not in tiles:
-            continue
-        
-        if i + 1 in tiles:
-            if tiles[i].value == tiles[i + 1].value:
-                    combine(tiles[i], tiles[i + 1])
-        else:
-            tiles[i + 1] = tile(i + 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i + 1) % 4), start_T + (size_square + size_line) * ((i + 1) // 4))
-            del tiles[i]
-
-def moveleft():
-    for i in range(15, -1 , -1):
-        if i % 4 == 0 or i not in tiles:
-            continue
-        
-        if (i - 1) in tiles:
-            if tiles[i].value == tiles[i - 1].value:
-                    combine(tiles[i], tiles[i - 1])
-        else:
-            tiles[i - 1] = tile(i - 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i - 1) % 4), start_T + (size_square + size_line) * ((i - 1) // 4))
-            del tiles[i]
-
-def movedown():
+    var = False
     for i in range(12):
         if i in tiles:
-            if (i + 4) in tiles:
-                if tiles[i].value == tiles[i + 4].value:
-                    combine(tiles[i], tiles[i + 4])
-            else:
+            for j in range(i + 4, 16, 4):
+                if j in tiles:
+                        if tiles[i].value == tiles[j].value:
+                            combine(tiles[j], tiles[i])
+                            var = True
+                            break
+                        else:
+                            break
+            
+
+
+    for i in range(15 , 3  , -1):              
+            if i in tiles and i - 4 not in tiles:
+                tiles[i - 4] = tile(i - 4, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i-4) % 4), start_T + (size_square + size_line) * ((i-4) // 4))
+                del tiles[i]
+                var = True
+
+    for i in range(15 , 3  , -1):              
+            if i in tiles and i - 4 not in tiles:
+                tiles[i - 4] = tile(i - 4, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i-4) % 4), start_T + (size_square + size_line) * ((i-4) // 4))
+                del tiles[i]
+                var = True
+
+    for i in range(15 , 3  , -1):              
+            if i in tiles and i - 4 not in tiles:
+                tiles[i - 4] = tile(i - 4, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i-4) % 4), start_T + (size_square + size_line) * ((i-4) // 4))
+                del tiles[i]
+                var = True
+    
+    return var
+
+
+def moveright():
+    var = False
+    for i in range(15, -1, -1):
+        if i % 4 == 0:
+            continue
+        if i in tiles:
+            j = i  - 1
+            while (j + 1) % 4 != 0:
+                if j in tiles:
+                    if tiles[i].value == tiles[j].value:
+                        combine(tiles[j], tiles[i])
+                        var = True
+                        break
+                    else:
+                        break
+
+                j -= 1
+    
+    for i in range(16):
+        if i in tiles and i + 1 not in tiles and ( i + 1) % 4 != 0:
+            tiles[i + 1] = tile(i + 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i + 1) % 4), start_T + (size_square + size_line) * ((i + 1) // 4))
+            del tiles[i]
+            var  = True
+    for i in range(16):
+        if i in tiles and i + 1 not in tiles and ( i + 1) % 4 != 0:
+            tiles[i + 1] = tile(i + 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i + 1) % 4), start_T + (size_square + size_line) * ((i + 1) // 4))
+            del tiles[i]
+            var  = True
+    for i in range(16):
+        if i in tiles and i + 1 not in tiles and ( i + 1) % 4 != 0:
+            tiles[i + 1] = tile(i + 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i + 1) % 4), start_T + (size_square + size_line) * ((i + 1) // 4))
+            del tiles[i]
+            var  = True
+    
+    return var
+
+
+
+
+
+
+
+def moveleft():
+    var = False
+    for i in range(16):
+        if ( i + 1) % 4 == 0:
+            continue
+        if i in tiles:
+            j = i + 1
+            while (j % 4 != 0):
+                if j in tiles:
+                    if tiles[i].value == tiles[j].value:
+                            combine(tiles[j], tiles[i])
+                            var = True
+                            break
+                    else:
+                        break
+                j += 1
+    
+    for i in range(15, -1 , -1):
+        if i in tiles and i - 1 not in tiles and i % 4 != 0:
+            tiles[i - 1] = tile(i - 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i - 1) % 4), start_T + (size_square + size_line) * ((i - 1) // 4))
+            del tiles[i]
+            var = True
+    
+    for i in range(15, -1 , -1):
+        if i in tiles and i - 1 not in tiles and i % 4 != 0:
+            tiles[i - 1] = tile(i - 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i - 1) % 4), start_T + (size_square + size_line) * ((i - 1) // 4))
+            del tiles[i]
+            var = True
+
+    for i in range(15, -1 , -1):
+        if i in tiles and i - 1 not in tiles and i % 4 != 0:
+            tiles[i - 1] = tile(i - 1, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i - 1) % 4), start_T + (size_square + size_line) * ((i - 1) // 4))
+            del tiles[i]
+            var = True
+    
+    return var
+
+def movedown():
+    var = False
+    for i in range(15, 3, -1):
+        if i in tiles:
+            for j in range(i - 4, -1, -4):
+                if j in tiles:
+                    if tiles[i].value == tiles[j].value:
+                        combine(tiles[j], tiles[i])
+                        var = True
+                        break
+                    else:
+                        break
+    
+    for i in range(12):    
+        if i in tiles and i + 4 not in tiles:
                 tiles[i + 4] = tile(i + 4, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i+4) % 4), start_T + (size_square + size_line) * ((i +4) // 4))
                 del tiles[i]
+                var = True
+    
+    for i in range(12):    
+        if i in tiles and i + 4 not in tiles:
+                tiles[i + 4] = tile(i + 4, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i+4) % 4), start_T + (size_square + size_line) * ((i +4) // 4))
+                del tiles[i]
+                var = True
+    
+    for i in range(12):    
+        if i in tiles and i + 4 not in tiles:
+                tiles[i + 4] = tile(i + 4, size_square, tiles[i].value, start_L + (size_square + size_line) * ((i+4) % 4), start_T + (size_square + size_line) * ((i +4) // 4))
+                del tiles[i]
+                var = True
+    
+    return var
 
 
         
@@ -159,43 +262,74 @@ tiles[num2] = tile(num2, size_square, val2, start_L + (size_square + size_line) 
 
 while running:
   
-    avail = [i for i in range(16) if i not in tiles]
-    if len(avail) == 0 and lose():
-        running = False
+      
         
     for event in pygame.event.get():
+        
         if event.type == pygame.QUIT:
             running = False
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                moveright()
-                
-                num1 = random.choice(avail)
-                tiles[num1] = tile(num1, size_square, 2, start_L + (size_square + size_line) * (num1 % 4), start_T + (size_square + size_line) * (num1 // 4))
-                
+                res = moveright()
                 draw()
+                pygame.display.flip()
+                pygame.time.wait(200)
+                if res:
+                    avail = [i for i in range(16) if i not in tiles]
+                    num1 = random.choice(avail)
+                    tiles[num1] = tile(num1, size_square, random.choices((2,4),[9,1])[0], start_L + (size_square + size_line) * (num1 % 4), start_T + (size_square + size_line) * (num1 // 4))
+                    draw()
+                    if len(avail) == 0 and lose():
+                        break
+                else:
+                    continue
 
             elif event.key == pygame.K_LEFT:
-                moveleft()
-                num1 = random.choice(avail)
-                a = tile(num1, size_square, 2, start_L + (size_square + size_line) * (num1 % 4), start_T + (size_square + size_line) * (num1 // 4))
-                tiles[num1] = a
+                res = moveleft()
                 draw()
+                pygame.display.flip()
+                pygame.time.wait(200)
+                if res:
+                    avail = [i for i in range(16) if i not in tiles]
+                    num1 = random.choice(avail)
+                    tiles[num1] = tile(num1, size_square, random.choices((2,4),[9,1])[0], start_L + (size_square + size_line) * (num1 % 4), start_T + (size_square + size_line) * (num1 // 4))
+                    draw()
+                    if len(avail) == 0 and lose():
+                        break
+                else:
+                    continue
+                
 
             elif event.key == pygame.K_UP:
-                moveup()
-                num1 = random.choice(avail)
-                a = tile(num1, size_square, 2, start_L + (size_square + size_line) * (num1 % 4), start_T + (size_square + size_line) * (num1 // 4))
-                tiles[num1] = a
+                res = moveup()
                 draw()
+                pygame.display.flip()
+                pygame.time.wait(200)
+                if res:
+                    avail = [i for i in range(16) if i not in tiles]
+                    num1 = random.choice(avail)
+                    tiles[num1]= tile(num1, size_square, random.choices((2,4),[9,1])[0], start_L + (size_square + size_line) * (num1 % 4), start_T + (size_square + size_line) * (num1 // 4))
+                    draw()
+                    if len(avail) == 0 and lose():
+                        break
+                else:
+                    continue
 
             elif event.key == pygame.K_DOWN:
-                movedown()
-                num1 = random.choice(avail)
-                a = tile(num1, size_square, 2, start_L + (size_square + size_line) * (num1 % 4), start_T + (size_square + size_line) * (num1 // 4))
-                tiles[num1] = a
+                res = movedown()
                 draw()
+                pygame.display.flip()
+                pygame.time.wait(200)
+                if res:
+                    avail = [i for i in range(16) if i not in tiles]
+                    num1 = random.choice(avail)
+                    tiles[num1]= tile(num1, size_square, random.choices((2,4),[9,1])[0], start_L + (size_square + size_line) * (num1 % 4), start_T + (size_square + size_line) * (num1 // 4))
+                    draw()
+                    if len(avail) == 0 and lose():
+                        break
+                else:
+                    continue
 
     
     
