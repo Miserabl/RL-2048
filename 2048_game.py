@@ -288,7 +288,7 @@ while running:
                     if res:
                         avail = [i for i in range(16) if i not in tiles]
                         num1 = random.choice(avail)
-                        tiles[num1] = tile(num1, size_square, random.choices((2,4),[9,1])[0], start_L + (size_square + size_line) * (num1 % 4), start_T + (size_square + size_line) * (num1 // 4))
+                        tiles[num1] = tile(num1, size_square, random.choices((2,4),[12,1])[0], start_L + (size_square + size_line) * (num1 % 4), start_T + (size_square + size_line) * (num1 // 4))
                         draw()
                         if len(avail) == 1 and lose():
                             gameover = True
