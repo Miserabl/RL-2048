@@ -251,10 +251,6 @@ class Game:
 
    
     def step(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
             action = random.choice([1,2,3,4])
             self.move(action)
             self.clock.tick(60)
@@ -266,4 +262,12 @@ class Game:
 # Starting the game
 if __name__ == "__main__":
     game = Game()
-    game.step()
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            game.step()
+            print(event)
+        
+pygame.quit()
