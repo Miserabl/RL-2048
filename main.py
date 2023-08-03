@@ -268,6 +268,6 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 running = False
             game.step()
-            print(event)
+            
         
 pygame.quit()

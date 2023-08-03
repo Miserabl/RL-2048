@@ -1,5 +1,7 @@
-import pygame
+import pygame 
 import random
+import torch
+import numpy as np
 from collections import deque
 from main import Tiles, Game
 
@@ -14,22 +16,38 @@ class Agent:
         self.epsilon = 0
         self.gamma = 0
         self.memory = deque(maxlen = MAXMEM)
-        #model, trainer
+        self.model = None
+        self.trainer = None
+        
 
     def get_state(self,game):
-        pass
+        return np.array(game.get_board_state())
 
     def remember(self, state, action, reward, next_state, done):
-        pass
+        self.memory.append(state,action, reward, next_state, done)
+
 
     def train_long_memory(self):
-        pass
+        if len(self.memory) > BATCH_SIZE:
+            mini_sample = random.sample(self.memory, BATCH_SIZE) #list of tuples
+        else:
+            mini_sample = self.memory
+
+        states, actions, rewards, next_states, dones = zip(*mini_sample)
+        self.trainer.train_step(states, actions, rewards, next_states, dones)
+        
 
     def train_short_memory(self, state, action, reward, next_state, done):
-        pass
+        self.trainer.train_step(state,action, reward, next_state, done)
 
     def get_action(self,state):
-        pass
+        self.epsilon = 80 - self.n_games
+        final_move = 0
+        if random.randint(0, 200) < self.epsilon:
+            final_move = random.choice([1,2,3,4])
+        else:
+            state0 = torch.tensor(state)
+            prediction = self.model.predict(state0)
 
 def train():
     plot_scores = []
