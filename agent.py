@@ -48,6 +48,9 @@ class Agent:
         else:
             state0 = torch.tensor(state)
             prediction = self.model.predict(state0)
+            final_move = torch.argmax(prediction).item()
+            
+        return final_move
 
 def train():
     plot_scores = []
@@ -71,7 +74,7 @@ def train():
 
             if score > record:
                 record = score
-                # agent.model.save()
+                agent.model.save()
 
             print("Game", agent.n_games, "Score", score,"Record", record)
 
